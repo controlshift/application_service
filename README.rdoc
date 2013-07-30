@@ -1,6 +1,6 @@
 = application_service
 
-Description goes here.
+A service layer for rails apps. 
 
 == Contributing to application_service
  
