@@ -11,14 +11,18 @@ class ApplicationService
 
 
   def self.before(callback, *args)
+    options = extract_callback_options(args, '!halted')
+
     args.each do |arg|
-      set_callback callback, :before, arg, :if => "!halted"
+      set_callback callback, :before, arg, options
     end
   end
 
   def self.after(callback, *args)
+    options = extract_callback_options(args, "!halted && value")
+
     args.each do |arg|
-      set_callback callback, :after, arg, :if => "!halted && value"
+      set_callback callback, :after, arg, options
     end
   end
 
@@ -66,5 +70,15 @@ class ApplicationService
     end
   end
 
+  def self.extract_callback_options(args, default_if_option)
+    options = args.last.is_a?(Hash) ? args.pop : {}
+    if options && options.has_key?(:if)
+      options[:if] = [options[:if], default_if_option]
+    else
+      options[:if] = default_if_option
+    end
+
+    options
+  end
 
 end
