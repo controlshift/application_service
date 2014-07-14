@@ -3,7 +3,7 @@ require 'active_support/all'
 class ApplicationService
 
   include ActiveSupport::Callbacks
-  define_callbacks :save, :create, :update,
+  define_callbacks :save, :create, :update, :destroy,
                    :terminator => "result == false"
 
   def initialize
@@ -53,6 +53,13 @@ class ApplicationService
       run_callbacks :update do
          @obj.save
       end
+    end
+  end
+
+  def destroy(obj)
+    @obj = obj
+    run_callbacks :destroy do
+      @obj.destroy
     end
   end
 

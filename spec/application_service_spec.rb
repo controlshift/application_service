@@ -50,7 +50,15 @@ describe ApplicationService do
 
       subject.update_attributes(obj, {:foo => 'bar'})
     end
+  end
 
+  describe '#destroy' do
+    it "should trigger destroy" do
+      obj = double()
+      obj.should_receive(:destroy)
+
+      subject.destroy(obj)
+    end
   end
 
   describe 'callbacks' do
