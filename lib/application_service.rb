@@ -49,6 +49,9 @@ class ApplicationService
   def update_attributes(obj, params)
     @obj = obj
     @obj.assign_attributes(params)
+
+    yield if block_given?
+
     run_callbacks :save do
       run_callbacks :update do
          @obj.save
