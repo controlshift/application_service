@@ -42,6 +42,34 @@ describe ApplicationService do
     end
   end
 
+  describe "#save!" do
+    it "should let you save an object" do
+      obj = double()
+      obj.stub(:new_record?).and_return(true)
+      obj.should_receive(:save!)
+      subject.save!(obj)
+    end
+
+    it "should trigger create" do
+      obj = double()
+      obj.stub(:new_record?).and_return(true)
+      obj.stub(:save!)
+
+      subject.should_receive(:create!)
+      subject.save!(obj)
+    end
+
+
+    it "should trigger update" do
+      obj = double()
+      obj.stub(:new_record?).and_return(false)
+      obj.stub(:save!)
+
+      subject.should_receive(:update!)
+      subject.save!(obj)
+    end
+  end
+
   describe "#update_attributes" do
     it "should trigger update" do
       obj = double()

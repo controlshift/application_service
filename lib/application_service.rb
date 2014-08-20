@@ -46,6 +46,18 @@ class ApplicationService
     end
   end
 
+  def save!(obj)
+    @obj = obj
+    run_callbacks :save do
+      if @obj.new_record?
+        result = create!
+      else
+        result = update!
+      end
+      result
+    end
+  end
+
   def update_attributes(obj, params)
     @obj = obj
     @obj.assign_attributes(params)
@@ -68,6 +80,12 @@ class ApplicationService
 
   private
 
+  def create!
+    run_callbacks :create do
+      @obj.save!
+    end
+  end
+
   def create
     run_callbacks :create do
       @obj.save
@@ -77,6 +95,12 @@ class ApplicationService
   def update
     run_callbacks :update do
       @obj.save
+    end
+  end
+
+  def update!
+    run_callbacks :update do
+      @obj.save!
     end
   end
 
