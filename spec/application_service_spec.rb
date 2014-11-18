@@ -89,6 +89,114 @@ describe ApplicationService do
     end
   end
 
+  describe '#admin_save' do
+    it "should trigger admin_save if defined on object" do
+      obj = double(new_record?: true)
+      expect(obj).to receive(:admin_save)
+
+      subject.admin_save(obj)
+    end
+
+    it "should trigger regular save if admin_save not defined on object" do
+      obj = double(new_record?: true)
+      expect(obj).to receive(:save)
+
+      subject.admin_save(obj)
+    end
+
+    describe 'callbacks' do
+      let(:object) { double(new_record?: false, save: true) }
+
+      context 'invoke' do
+        it "should invoke callbacks if skip_on_admin_save is false" do
+          service_klass = Class.new(ApplicationService) do
+            before :save, :before_save_callback, skip_on_admin_save: false
+            after :save, :after_save_callback, skip_on_admin_save: false
+          end
+
+          service = service_klass.new
+          expect(service).to receive(:before_save_callback)
+          expect(service).to receive(:after_save_callback)
+
+          service.admin_save(object)
+        end
+
+        it "should invoke callbacks if skip_on_admin_save option missing" do
+          service_klass = Class.new(ApplicationService) do
+            before :save, :before_save_callback
+            after :save, :after_save_callback
+          end
+
+          service = service_klass.new
+          expect(service).to receive(:before_save_callback)
+          expect(service).to receive(:after_save_callback)
+
+          service.admin_save(object)
+        end
+
+        it "should invoke callbacks on save even if skip_on_admin_save is true" do
+          service_klass = Class.new(ApplicationService) do
+            before :save, :before_save_callback, skip_on_admin_save: true
+            after :save, :after_save_callback, skip_on_admin_save: true
+          end
+
+          service = service_klass.new
+          expect(service).to receive(:before_save_callback)
+          expect(service).to receive(:after_save_callback)
+
+          service.save(object)
+        end
+
+        it "should invoke callbacks on save even if admin_save raises exception" do
+          service_klass = Class.new(ApplicationService) do
+            before :save, :before_save_callback, skip_on_admin_save: true
+            after :save, :after_save_callback, skip_on_admin_save: true
+          end
+
+          expect(object).to receive(:save).and_raise(StandardError)
+
+          service = service_klass.new
+          expect(service).to receive(:before_save_callback).once
+          expect(service).to receive(:after_save_callback).once
+
+          expect { service.admin_save(object) }.to raise_error
+
+          expect(object).to receive(:save).and_return(true)
+
+          service.save(object)
+        end
+      end
+
+      context 'skip' do
+        it "should skip callbacks if skip_on_admin_save for create" do
+          service_klass = Class.new(ApplicationService) do
+            before :create, :before_create_callback, skip_on_admin_save: true
+            after :create, :after_create_callback, skip_on_admin_save: true
+          end
+
+          service = service_klass.new
+          expect(service).not_to receive(:before_create_callback)
+          expect(service).not_to receive(:after_create_callback)
+
+          service.admin_save(object)
+        end
+
+        it "should skip callbacks if skip_on_admin_save for update" do
+          service_klass = Class.new(ApplicationService) do
+            before :save, :before_save_callback, skip_on_admin_save: true
+            after :save, :after_save_callback, skip_on_admin_save: true
+          end
+
+          service = service_klass.new
+          expect(service).not_to receive(:before_save_callback)
+          expect(service).not_to receive(:after_save_callback)
+
+          service.admin_save(object)
+        end
+      end
+    end
+  end
+
   describe 'callbacks' do
     let(:object) { double(new_record?: false, save: true) }
 

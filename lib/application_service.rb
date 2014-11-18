@@ -15,6 +15,9 @@ class ApplicationService
 
     args.each do |arg|
       set_callback callback, :before, arg, options
+      if options.fetch(:skip_on_admin_save, false)
+        skip_callback callback, :before, arg, if: -> { @on_admin_save }
+      end
     end
   end
 
@@ -23,6 +26,9 @@ class ApplicationService
 
     args.each do |arg|
       set_callback callback, :after, arg, options
+      if options.fetch(:skip_on_admin_save, false)
+        skip_callback callback, :after, arg, if: -> { @on_admin_save }
+      end
     end
   end
 
@@ -78,29 +84,46 @@ class ApplicationService
     end
   end
 
+  def admin_save(obj)
+    @obj = obj
+
+    @on_admin_save = true
+    save_method = @obj.respond_to?(:admin_save) ? :admin_save : :save
+    run_callbacks :save do
+      if @obj.new_record?
+        result = create(save_method)
+      else
+        result = update(save_method)
+      end
+      result
+    end
+  ensure
+    @on_admin_save = false
+  end
+
   private
 
-  def create!
+  def create!(save_method=:save!)
     run_callbacks :create do
-      @obj.save!
+      @obj.send(save_method)
     end
   end
 
-  def create
+  def create(save_method=:save)
     run_callbacks :create do
-      @obj.save
+      @obj.send(save_method)
     end
   end
 
-  def update
+  def update(save_method=:save)
     run_callbacks :update do
-      @obj.save
+      @obj.send(save_method)
     end
   end
 
-  def update!
+  def update!(save_method=:save!)
     run_callbacks :update do
-      @obj.save!
+      @obj.send(save_method)
     end
   end
 
