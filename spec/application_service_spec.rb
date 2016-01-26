@@ -238,28 +238,23 @@ describe ApplicationService do
       end
 
       it "should not invoke callback if halted without options" do
-        pending('Need to look deeper on ActiveSupport::Callback code to understand how halt works')
-
         service_klass = Class.new(ApplicationService) do
-          before :save, :before_save_callback
+          before :save, :before_save_callback1, :before_save_callback2
         end
 
         service = service_klass.new
-        service.should_not_receive(:before_save_callback)
-        service.stub(:halted).and_return(true)
+        service.should_not_receive(:before_save_callback2)
+        service.stub(:before_save_callback1).and_return(false)
         service.save(object)
       end
 
       it "should not invoke callback if halted with options" do
-        pending('Need to look deeper on ActiveSupport::Callback code to understand how halt works')
-
         service_klass = Class.new(ApplicationService) do
-          before :save, :before_save_callback, if: 'true'
+          before :save, :before_save_callback, if: 'false'
         end
 
         service = service_klass.new
         service.should_not_receive(:before_save_callback)
-        service.stub(:halted).and_return(true)
         service.save(object)
       end
     end
