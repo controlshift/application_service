@@ -333,6 +333,37 @@ describe ApplicationService do
         service.should_receive(:after_save_callback_2).and_return(true)
         service.save(object)
       end
+
+      it "should invoke callback if conditional is true" do
+        service_klass = Class.new(ApplicationService) do
+          after :save, :after_save_callback, if: 'true'
+        end
+
+        service = service_klass.new
+        service.should_receive(:after_save_callback).and_return(true)
+        expect(service.save(object)).to eq(true)
+      end
+
+      it 'should not invoke callback if conditional is false' do
+        service_klass = Class.new(ApplicationService) do
+          after :save, :after_save_callback, if: 'false'
+        end
+
+        service = service_klass.new
+        service.should_not_receive(:after_save_callback)
+        expect(service.save(object)).to eq(true)
+      end
+
+      it 'should not invoke after save callbacks when save fails' do
+        service_klass = Class.new(ApplicationService) do
+          after :save, :after_save_callback
+        end
+
+        service = service_klass.new
+        object.should_receive(:save).and_return(false)
+        service.should_not_receive(:after_save_callback)
+        expect(service.save(object)).to eq(false)
+      end
     end
   end
 end

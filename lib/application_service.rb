@@ -3,11 +3,10 @@ require 'active_support/all'
 class ApplicationService
 
   include ActiveSupport::Callbacks
-  define_callbacks :save, :create, :update, :destroy, terminator: ->(target, result) { result == false }
+  define_callbacks :save, :create, :update, :destroy, {terminator: ->(target, result) { result == false }, skip_after_callbacks_if_terminated: true}
 
   def initialize
   end
-
 
   def self.before(callback, *args)
     options = extract_callback_options(args)
