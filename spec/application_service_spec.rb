@@ -248,14 +248,52 @@ describe ApplicationService do
         service.save(object)
       end
 
-      it "should not invoke callback if halted with options" do
+      it "should invoke callback if callback successful" do
+        service_klass = Class.new(ApplicationService) do
+          before :save, :before_save_callback1, :before_save_callback2
+        end
+
+        service = service_klass.new
+        service.should_receive(:before_save_callback2)
+        service.stub(:before_save_callback1).and_return(true)
+        service.save(object)
+      end
+
+      it "should invoke subsequent callbacks if a callback is skipped with options" do
         service_klass = Class.new(ApplicationService) do
           before :save, :before_save_callback, if: 'false'
+          before :save, :before_save_callback_2
+
         end
 
         service = service_klass.new
         service.should_not_receive(:before_save_callback)
+        service.should_receive(:before_save_callback_2)
+
+        object.should_receive(:save).and_return(true)
+
         service.save(object)
+      end
+
+      it "should halt execution if callback fails" do
+        service_klass = Class.new(ApplicationService) do
+          before :save, :before_save_callback
+        end
+
+        service = service_klass.new
+        service.stub(:before_save_callback).and_return(false)
+        object.should_not_receive(:save)
+        expect(service.save(object)).to eq(false)
+      end
+
+      it "should invoke callback if conditional is true" do
+        service_klass = Class.new(ApplicationService) do
+          before :save, :before_save_callback, if: 'true'
+        end
+
+        service = service_klass.new
+        service.should_receive(:before_save_callback).and_return(true)
+        expect(service.save(object)).to eq(true)
       end
     end
 
