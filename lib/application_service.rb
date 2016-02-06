@@ -22,6 +22,11 @@ class ApplicationService
   def self.after(callback, *args)
     options = extract_callback_options(args)
 
+    conditional = ActiveSupport::Callbacks::Conditionals::Value.new { |v|
+      v != false
+    }
+    options[:if] = Array(options[:if]) << conditional
+
     args.each do |arg|
       set_callback callback, :after, arg, options
       if options.fetch(:skip_on_admin_save, false)
