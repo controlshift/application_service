@@ -3,7 +3,7 @@ require 'active_support/all'
 class ApplicationService
 
   include ActiveSupport::Callbacks
-  define_callbacks :save, :create, :update, :destroy, {terminator: ->(target, result) { result == false }, skip_after_callbacks_if_terminated: true}
+  define_callbacks :save, :create, :update, :destroy, {terminator: ->(target, result) { result.call == false }, skip_after_callbacks_if_terminated: true}
 
   def initialize
   end
