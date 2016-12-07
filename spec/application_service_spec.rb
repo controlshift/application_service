@@ -9,35 +9,35 @@ describe ApplicationService do
     it "should allow set and get" do
       obj = double()
       as = ApplicationService.new
-      as.current_object= obj
-      as.current_object.should == obj
+      as.current_object = obj
+      expect(as.current_object).to eq(obj)
     end
   end
 
   describe "#save" do
     it "should let you save an object" do
       obj = double()
-      obj.stub(:new_record?).and_return(true)
-      obj.should_receive(:save)
+      allow(obj).to receive(:new_record?).and_return(true)
+      expect(obj).to receive(:save)
       subject.save(obj)
     end
 
     it "should trigger create" do
       obj = double()
-      obj.stub(:new_record?).and_return(true)
-      obj.stub(:save)
+      allow(obj).to receive(:new_record?).and_return(true)
+      allow(obj).to receive(:save)
 
-      subject.should_receive(:create)
+      expect(subject).to receive(:create)
       subject.save(obj)
     end
 
 
     it "should trigger update" do
       obj = double()
-      obj.stub(:new_record?).and_return(false)
-      obj.stub(:save)
+      allow(obj).to receive(:new_record?).and_return(false)
+      allow(obj).to receive(:save)
 
-      subject.should_receive(:update)
+      expect(subject).to receive(:update)
       subject.save(obj)
     end
   end
@@ -45,27 +45,27 @@ describe ApplicationService do
   describe "#save!" do
     it "should let you save an object" do
       obj = double()
-      obj.stub(:new_record?).and_return(true)
-      obj.should_receive(:save!)
+      allow(obj).to receive(:new_record?).and_return(true)
+      expect(obj).to receive(:save!)
       subject.save!(obj)
     end
 
     it "should trigger create" do
       obj = double()
-      obj.stub(:new_record?).and_return(true)
-      obj.stub(:save!)
+      allow(obj).to receive(:new_record?).and_return(true)
+      allow(obj).to receive(:save!)
 
-      subject.should_receive(:create!)
+      expect(subject).to receive(:create!)
       subject.save!(obj)
     end
 
 
     it "should trigger update" do
       obj = double()
-      obj.stub(:new_record?).and_return(false)
-      obj.stub(:save!)
+      allow(obj).to receive(:new_record?).and_return(false)
+      allow(obj).to receive(:save!)
 
-      subject.should_receive(:update!)
+      expect(subject).to receive(:update!)
       subject.save!(obj)
     end
   end
@@ -73,8 +73,8 @@ describe ApplicationService do
   describe "#update_attributes" do
     it "should trigger update" do
       obj = double()
-      obj.should_receive(:assign_attributes).with( {:foo => 'bar'}).and_return(:true)
-      obj.should_receive(:save)
+      expect(obj).to receive(:assign_attributes).with( {:foo => 'bar'}).and_return(:true)
+      expect(obj).to receive(:save)
 
       subject.update_attributes(obj, {:foo => 'bar'})
     end
@@ -83,7 +83,7 @@ describe ApplicationService do
   describe '#destroy' do
     it "should trigger destroy" do
       obj = double()
-      obj.should_receive(:destroy)
+      expect(obj).to receive(:destroy)
 
       subject.destroy(obj)
     end
@@ -159,7 +159,7 @@ describe ApplicationService do
           expect(service).to receive(:before_save_callback).once
           expect(service).to receive(:after_save_callback).once
 
-          expect { service.admin_save(object) }.to raise_error
+          expect { service.admin_save(object) }.to raise_error(StandardError)
 
           expect(object).to receive(:save).and_return(true)
 
@@ -209,12 +209,12 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.should_not_receive(:before_save_callback)
+        expect(service).to_not receive(:before_save_callback)
         service.save(object)
 
         invoke_callback = true
         service = service_klass.new
-        service.should_receive(:before_save_callback).and_return(true)
+        expect(service).to receive(:before_save_callback).and_return(true)
         service.save(object)
       end
 
@@ -226,14 +226,14 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.should_not_receive(:before_save_callback_1)
-        service.should_not_receive(:before_save_callback_2)
+        expect(service).not_to receive(:before_save_callback_1)
+        expect(service).not_to receive(:before_save_callback_2)
         service.save(object)
 
         invoke_callback = true
         service = service_klass.new
-        service.should_receive(:before_save_callback_1).and_return(true)
-        service.should_receive(:before_save_callback_2).and_return(true)
+        expect(service).to receive(:before_save_callback_1).and_return(true)
+        expect(service).to receive(:before_save_callback_2).and_return(true)
         service.save(object)
       end
 
@@ -243,8 +243,8 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.should_not_receive(:before_save_callback2)
-        service.stub(:before_save_callback1).and_return(false)
+        expect(service).not_to receive(:before_save_callback2)
+        allow(service).to receive(:before_save_callback1).and_return(false)
         service.save(object)
       end
 
@@ -254,8 +254,8 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.should_receive(:before_save_callback2)
-        service.stub(:before_save_callback1).and_return(true)
+        expect(service).to receive(:before_save_callback2)
+        allow(service).to receive(:before_save_callback1).and_return(true)
         service.save(object)
       end
 
@@ -267,10 +267,10 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.should_not_receive(:before_save_callback)
-        service.should_receive(:before_save_callback_2)
+        expect(service).not_to receive(:before_save_callback)
+        expect(service).to receive(:before_save_callback_2)
 
-        object.should_receive(:save).and_return(true)
+        expect(object).to receive(:save).and_return(true)
 
         service.save(object)
       end
@@ -281,8 +281,8 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.stub(:before_save_callback).and_return(false)
-        object.should_not_receive(:save)
+        allow(service).to receive(:before_save_callback).and_return(false)
+        expect(object).not_to receive(:save)
         expect(service.save(object)).to eq(false)
       end
 
@@ -292,7 +292,7 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.should_receive(:before_save_callback).and_return(true)
+        expect(service).to receive(:before_save_callback).and_return(true)
         expect(service.save(object)).to eq(true)
       end
     end
@@ -306,12 +306,12 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.should_not_receive(:after_save_callback)
+        expect(service).not_to receive(:after_save_callback)
         service.save(object)
 
         invoke_callback = true
         service = service_klass.new
-        service.should_receive(:after_save_callback).and_return(true)
+        expect(service).to receive(:after_save_callback).and_return(true)
         service.save(object)
       end
 
@@ -323,14 +323,14 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.should_not_receive(:after_save_callback_1)
-        service.should_not_receive(:after_save_callback_2)
+        expect(service).not_to receive(:after_save_callback_1)
+        expect(service).not_to receive(:after_save_callback_2)
         service.save(object)
 
         invoke_callback = true
         service = service_klass.new
-        service.should_receive(:after_save_callback_1).and_return(true)
-        service.should_receive(:after_save_callback_2).and_return(true)
+        expect(service).to receive(:after_save_callback_1).and_return(true)
+        expect(service).to receive(:after_save_callback_2).and_return(true)
         service.save(object)
       end
 
@@ -340,7 +340,7 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.should_receive(:after_save_callback).and_return(true)
+        expect(service).to receive(:after_save_callback).and_return(true)
         expect(service.save(object)).to eq(true)
       end
 
@@ -350,7 +350,7 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        service.should_not_receive(:after_save_callback)
+        expect(service).not_to receive(:after_save_callback)
         expect(service.save(object)).to eq(true)
       end
 
@@ -360,8 +360,8 @@ describe ApplicationService do
         end
 
         service = service_klass.new
-        object.should_receive(:save).and_return(false)
-        service.should_not_receive(:after_save_callback)
+        expect(object).to receive(:save).and_return(false)
+        expect(service).not_to receive(:after_save_callback)
         expect(service.save(object)).to eq(false)
       end
     end
