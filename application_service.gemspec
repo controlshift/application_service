@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Nathan Woodhull".freeze]
-  s.date = "2016-12-07"
+  s.date = "2018-12-03"
   s.description = "A service layer scaffold for rails apps extracted from Agra".freeze
   s.email = "woodhull@gmail.com".freeze
   s.extra_rdoc_files = [
@@ -36,25 +36,25 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "http://github.com/woodhull/application_service".freeze
   s.licenses = ["MIT".freeze]
-  s.rubygems_version = "2.6.8".freeze
+  s.rubygems_version = "2.6.12".freeze
   s.summary = "Service Layer Scaffold".freeze
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<activesupport>.freeze, [">= 0"])
-      s.add_development_dependency(%q<rspec>.freeze, [">= 0"])
-      s.add_development_dependency(%q<jeweler>.freeze, [">= 0"])
+      s.add_runtime_dependency(%q<activesupport>.freeze, [">= 5.0.0.1", "~> 5.0"])
+      s.add_development_dependency(%q<rspec>.freeze, ["~> 3.5"])
+      s.add_development_dependency(%q<jeweler>.freeze, [">= 2.2.1", "~> 2.2"])
     else
-      s.add_dependency(%q<activesupport>.freeze, [">= 0"])
-      s.add_dependency(%q<rspec>.freeze, [">= 0"])
-      s.add_dependency(%q<jeweler>.freeze, [">= 0"])
+      s.add_dependency(%q<activesupport>.freeze, [">= 5.0.0.1", "~> 5.0"])
+      s.add_dependency(%q<rspec>.freeze, ["~> 3.5"])
+      s.add_dependency(%q<jeweler>.freeze, [">= 2.2.1", "~> 2.2"])
     end
   else
-    s.add_dependency(%q<activesupport>.freeze, [">= 0"])
-    s.add_dependency(%q<rspec>.freeze, [">= 0"])
-    s.add_dependency(%q<jeweler>.freeze, [">= 0"])
+    s.add_dependency(%q<activesupport>.freeze, [">= 5.0.0.1", "~> 5.0"])
+    s.add_dependency(%q<rspec>.freeze, ["~> 3.5"])
+    s.add_dependency(%q<jeweler>.freeze, [">= 2.2.1", "~> 2.2"])
   end
 end
 
