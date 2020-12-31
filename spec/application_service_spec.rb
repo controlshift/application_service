@@ -261,7 +261,7 @@ describe ApplicationService do
 
       it "should invoke subsequent callbacks if a callback is skipped with options" do
         service_klass = Class.new(ApplicationService) do
-          before :save, :before_save_callback, if: 'false'
+          before :save, :before_save_callback, if: -> { false }
           before :save, :before_save_callback_2
 
         end
@@ -288,7 +288,7 @@ describe ApplicationService do
 
       it "should invoke callback if conditional is true" do
         service_klass = Class.new(ApplicationService) do
-          before :save, :before_save_callback, if: 'true'
+          before :save, :before_save_callback, if: -> { true }
         end
 
         service = service_klass.new
@@ -336,7 +336,7 @@ describe ApplicationService do
 
       it "should invoke callback if conditional is true" do
         service_klass = Class.new(ApplicationService) do
-          after :save, :after_save_callback, if: 'true'
+          after :save, :after_save_callback, if: -> { true }
         end
 
         service = service_klass.new
@@ -346,7 +346,7 @@ describe ApplicationService do
 
       it 'should not invoke callback if conditional is false' do
         service_klass = Class.new(ApplicationService) do
-          after :save, :after_save_callback, if: 'false'
+          after :save, :after_save_callback, if: -> { false }
         end
 
         service = service_klass.new
