@@ -73,7 +73,7 @@ describe ApplicationService do
   describe "#update_attributes" do
     it "should trigger update" do
       obj = double()
-      expect(obj).to receive(:assign_attributes).with( {:foo => 'bar'}).and_return(:true)
+      expect(obj).to receive(:assign_attributes).with( {:foo => 'bar'}).and_return(true)
       expect(obj).to receive(:save)
 
       subject.update_attributes(obj, {:foo => 'bar'})

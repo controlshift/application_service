@@ -3,7 +3,7 @@ require 'active_support/all'
 class ApplicationService
 
   include ActiveSupport::Callbacks
-  define_callbacks :save, :create, :update, :destroy, {terminator: ->(target, result) { result.call == false }, skip_after_callbacks_if_terminated: true}
+  define_callbacks :save, :create, :update, :destroy, {terminator: ->(_target, result) { result.call == false }, skip_after_callbacks_if_terminated: true}
 
   def initialize
   end
@@ -104,6 +104,12 @@ class ApplicationService
     @on_admin_save = false
   end
 
+  def self.extract_callback_options(args)
+    options = args.last.is_a?(Hash) ? args.pop : {}
+
+    options
+  end
+
   private
 
   def create!(save_method=:save!)
@@ -129,13 +135,4 @@ class ApplicationService
       @obj.send(save_method)
     end
   end
-
-  private
-
-  def self.extract_callback_options(args)
-    options = args.last.is_a?(Hash) ? args.pop : {}
-
-    options
-  end
-
 end
