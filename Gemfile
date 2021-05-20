@@ -9,5 +9,5 @@ gem 'activesupport'
 # Include everything needed to run rake, tests, features, etc.
 group :development do
   gem "rspec"
-  gem "jeweler"
+  gem 'juwelier', git: 'https://github.com/flajann2/juwelier.git'
 end
