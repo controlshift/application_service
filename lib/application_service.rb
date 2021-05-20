@@ -67,16 +67,16 @@ class ApplicationService
     end
   end
 
-  def update_attributes(obj, params)
+  def update_attributes(obj, params, with_admin_save: false)
     @obj = obj
     @obj.assign_attributes(params)
 
     yield if block_given?
 
-    run_callbacks :save do
-      run_callbacks :update do
-         @obj.save
-      end
+    if with_admin_save
+      self.admin_save(obj)
+    else
+      self.save(obj)
     end
   end
 
