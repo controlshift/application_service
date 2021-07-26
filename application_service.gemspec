@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Nathan Woodhull".freeze]
-  s.date = "2021-05-20"
+  s.date = "2021-07-23"
   s.description = "A service layer scaffold for rails apps extracted from Agra".freeze
   s.email = "woodhull@gmail.com".freeze
   s.extra_rdoc_files = [
@@ -20,11 +20,11 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".document",
+    ".github/workflows/ci.yml",
     ".rspec",
     ".rubocop.yml",
     ".ruby-gemset",
     ".ruby-version",
-    ".travis.yml",
     "Gemfile",
     "LICENSE.txt",
     "README.rdoc",
@@ -47,12 +47,12 @@ Gem::Specification.new do |s|
   if s.respond_to? :add_runtime_dependency then
     s.add_runtime_dependency(%q<activesupport>.freeze, [">= 5.0.0.1", "< 7.0"])
     s.add_development_dependency(%q<rspec>.freeze, ["~> 3.5"])
-    s.add_development_dependency(%q<rubocop>.freeze, ["~> 1.15"])
+    s.add_development_dependency(%q<rubocop>.freeze, [">= 0"])
     s.add_development_dependency(%q<jeweler>.freeze, ["~> 2.2", ">= 2.2.1"])
   else
     s.add_dependency(%q<activesupport>.freeze, [">= 5.0.0.1", "< 7.0"])
     s.add_dependency(%q<rspec>.freeze, ["~> 3.5"])
-    s.add_dependency(%q<rubocop>.freeze, ["~> 1.15"])
+    s.add_dependency(%q<rubocop>.freeze, [">= 0"])
     s.add_dependency(%q<jeweler>.freeze, ["~> 2.2", ">= 2.2.1"])
   end
 end
